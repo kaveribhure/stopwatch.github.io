@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registration Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;        
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="submit"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container" id="registrationSection">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <input type="text" id="registerUsername" placeholder="Username" required>
+            <input type="password" id="registerPassword" placeholder="Password" required>
+            <input type="number" id="registerNumber" placeholder="Number" required>
+            <input type="text" id="registerEmail" placeholder="Email" required>
+            <input type="submit" value="Register">
+        </form>
+        <p>Already have an account? <a href="#" id="loginLink">Login</a></p>
+    </div>
+
+    <div class="container" id="loginSection" style="display: none;">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Username" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <input type="submit" value="Login">
+            <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+        </form>
+    </div>
+
+    <script>
+        // Retrieve users from local storage or initialize an empty array
+        let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+        // Function to update local storage with registered users
+        function updateLocalStorage() {
+            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        }
+
+        // Function to check if a user is registered
+        function isUserRegistered(username) {
+            return registeredUsers.some(user => user.username === username);
+        }
+
+        // Registration form submission event listener
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let username = document.getElementById('registerUsername').value.trim();
+            let password = document.getElementById('registerPassword').value.trim();
+            let number = parseInt(document.getElementById('registerNumber').value.trim());
+            let email = document.getElementById('registerEmail').value.trim();
+
+            // Check if the username is already taken
+            if (isUserRegistered(username)) {
+                alert('Username is already taken!');
+                return;
+            }
+
+            // Register the user
+            registeredUsers.push({ username, password, number, email });
+            updateLocalStorage(); // Update local storage
+            alert('User registered successfully!');
+
+            // Clear registration form fields
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerNumber').value = '';
+            document.getElementById('registerEmail').value = '';
+
+            // Show the login section
+            document.getElementById('registrationSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+        });
+
+        // Login form submission event listener
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let username = document.getElementById('loginUsername').value.trim();
+            let password = document.getElementById('loginPassword').value.trim();
+
+            // Check if the user exists and credentials match
+            let user = registeredUsers.find(user => user.username === username && user.password === password);
+            if (user) {
+                alert('Login successful! User Number: ' + user.number);
+            } else {
+                alert('Invalid username or password.');
+            }
+
+            // Clear login form fields
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        });
+
+        // Login link click event listener
+        document.getElementById('loginLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registrationSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+        });
+
+        // Register link click event listener
+        document.getElementById('registerLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('registrationSection').style.display = 'block';
+        });   
+    </script>
+</body>
+</html>
+
